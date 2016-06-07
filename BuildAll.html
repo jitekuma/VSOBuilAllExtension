@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+    <html>
+        <head>  
+            <script src="sdk/scripts/VSS.SDK.js"></script>     
+            <script type="text/javascript">
+                    VSS.init({                        
+                        explicitNotifyLoaded: true,
+                        usePlatformStyles: true
+                    });
+
+                    VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/Build/RestClient"], function (WidgetHelpers, TFS_Build_WebApi) {
+                        WidgetHelpers.IncludeWidgetStyles();
+                        VSS.register("BuilsAllWidget", function () {  
+                            var projectId = VSS.getWebContext().project.id;
+                           
+                            return {
+                                load: function (widgetSettings) {
+                                    var $title = $('h2.title');
+                                    $title.text('Build All Ready');
+
+                                    return WidgetHelpers.WidgetStatusHelper.Success();
+                                }
+                            }
+                        });
+                        VSS.notifyLoadSucceeded();
+                    });
+                function runBuilds() {
+                
+                     VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/Build/RestClient"], function (WidgetHelpers, TFS_Build_WebApi) {
+                        
+                            var projectId = VSS.getWebContext().project.id;
+                            return TFS_Build_WebApi.getClient().getDefinitions(projectId)
+                            .then(function (query) {
+                                        
+                                        for(var i = 0; i < query.length; i++) {
+                                        
+                                            var build = {queue:{id:"2"},definition:{id: query[i].id},project:{id: projectId }};
+                                                
+                                            TFS_Build_WebApi.getClient().queueBuild(build, projectId).then( function(temp)
+                                            {
+                                                var $title = $('h2.title');
+                                                $title.text('Triggered ' + temp.buildNumber);
+                                            });
+                                            
+                                        }
+                                       
+                                         var $container = $('#query-info-container');
+                                         $container.empty();
+                                         $container.append($list);
+                                
+                                        return WidgetHelpers.WidgetStatusHelper.Success();
+                                    }, function (error) {                            
+                                        return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
+                                    });
+                    });
+                
+                }
+            </script>            
+        </head>
+        <body>
+            <div class="widget">
+                <h2 class="title"></h2>
+                <button type="button" onclick="runBuilds()" >Build All BDs</button>
+                <div id="temp"></div>
+            </div>
+        </body>
+    </html>
