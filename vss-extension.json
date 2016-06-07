@@ -1,0 +1,54 @@
+    {
+        "manifestVersion": 1,
+        "id": "vsts-extensions-myExtensions",
+        "version": "1.1.0",
+        "name": "Build All",
+        "description": "Build All BDs in the project using hosted agent",
+        "publisher": "jikuma",
+        "targets": [
+            {
+                "id": "Microsoft.VisualStudio.Services"
+            }
+        ],
+         "icons": {
+            "default": "img/logo.png"
+        },
+         "contributions": [
+            {
+                "id": "BuilsAllWidget",
+                "type": "ms.vss-dashboards-web.widget",
+                "targets": [
+                    "ms.vss-dashboards-web.widget-catalog"
+                ],
+                "properties": {
+                    "name": "Build all Build Definition In project",
+                    "description": "This builds all BD in the project using hosted Agent queue",
+                    "catalogIconUrl:": "img/CatalogIcon.png",
+                    "previewImageUrl": "img/preview.png",                            
+                    "uri": "BuildAll.html",
+                    "supportedSizes": [
+                         {
+                                "rowSpan": 1,
+                                "columnSpan": 2
+                            }
+                        ],
+                    "supportedScopes": ["project_team"]
+                }
+            }
+        ],
+        "files": [
+            {
+                "path": "BuildAll.html", "addressable": true
+            },
+            {
+                "path": "sdk/scripts", "addressable": true
+            },
+            {
+                "path": "img", "addressable": true
+            }
+        ],
+        "scopes":[
+            "vso.build_execute"
+        ]
+        
+    }
